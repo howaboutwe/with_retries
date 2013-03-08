@@ -1,6 +1,4 @@
-# WithRetries
-
-TODO: Write a gem description
+# with_retries
 
 ## Installation
 
@@ -18,7 +16,23 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+# example.rb
+require 'with_retries'
+
+Boom = Class.new(RuntimeError)
+
+with_retries(Boom, attempts: 3) do
+  puts "Here I am"
+  raise Boom.new("BOOM!")
+end
+
+#=> $ ruby example.rb
+#=> Here I am
+#=> Here I am
+#=> Here I am
+#=> example.rb:8:in `block in <main>': BOOM! (Boom)
+```
 
 ## Contributing
 
