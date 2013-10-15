@@ -38,6 +38,20 @@ describe Kernel do
           with_retries(Boom, attempts: 2) { raise unexpected_error.new }
         end.to raise_error(unexpected_error)
       end
+
+      context "when given a logger parameter" do
+        let(:logger) { Logger.new(STDOUT) }
+
+        it "logs a warning to the given logger" do
+          logger.should_receive(:warn).exactly(5).times
+
+          expect do
+            with_retries(Boom, attempts: 5, logger: logger) do
+              raise Boom.new
+            end
+          end.to raise_error
+        end
+      end
     end
 
     context "when not given an attempts parameter" do
