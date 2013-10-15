@@ -8,14 +8,16 @@ module Kernel
 
     begin
       yield
-    rescue *errors
+    rescue *errors => e
       attempts -= 1
 
       if logger
         times = (attempts == 1 ? "time" : "times")
 
         logger.warn(
-          "Attempt failed: #{errors}. Retrying #{attempts} more #{times}"
+          "Attempt failed. Retrying #{attempts} more #{times}...\n" +
+          ["#{e.class}: #{e.message}:", *e.backtrace].join("\n  ") +
+          "\n"
          )
       end
 
