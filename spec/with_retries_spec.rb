@@ -52,6 +52,34 @@ describe Kernel do
           end.to raise_error
         end
       end
+
+      context "when given a timeout parameter" do
+        it "retries the block after sleeping for the provided timeout" do
+          Kernel.should_receive(:sleep).with(5).twice
+
+          expect do
+            with_retries(Boom, attempts: 2, timeout: 5) do
+              3.times do
+                raise Boom.new
+              end
+            end
+          end.to raise_error(Boom)
+        end
+      end
+
+      context "when not given a timeout parameter" do
+        it "does not sleep" do
+          Kernel.should_not_receive(:sleep)
+
+          expect do
+            with_retries(Boom, attempts: 2) do
+              3.times do
+                raise Boom.new
+              end
+            end
+          end.to raise_error(Boom)
+        end
+      end
     end
 
     context "when not given an attempts parameter" do
