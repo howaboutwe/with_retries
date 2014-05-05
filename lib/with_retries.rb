@@ -5,11 +5,14 @@ module Kernel
     attempts = params[:attempts] or
       raise ArgumentError.new("Attempts parameter not provided")
     logger = params[:logger]
+    timeout = params[:timeout]
 
     begin
       yield
     rescue *errors => e
       attempts -= 1
+
+      Kernel.sleep(timeout) if timeout
 
       if logger
         times = (attempts == 1 ? "time" : "times")
@@ -25,4 +28,3 @@ module Kernel
     end
   end
 end
-
